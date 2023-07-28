@@ -96,7 +96,7 @@ FROM
     OUTER APPLY dados.event_data.nodes('data/value/deadlock/process-list/process') AS processo(dados)
     LEFT JOIN (
         SELECT
-            A.Dt_Evento,
+            
             recurso.dados.value('@fileid', 'int') AS [resourceFileId],
             recurso.dados.value('@pageid', 'int') AS [resourcePageId],
             recurso.dados.value('@dbid', 'int') AS [resourceDBId],
@@ -108,4 +108,4 @@ FROM
             #xml_deadlock A
             CROSS APPLY A.TargetData.nodes('//ridlock') AS recurso(dados)
             OUTER APPLY recurso.dados.nodes('owner-list/owner') AS owner(dados)
-    ) AS recurso ON recurso.resourceProcessOwner = processo.dados.value('@id', 'varchar(100)') AND recurso.Dt_Evento = A.Dt_Evento
+    ) AS recurso ON recurso.resourceProcessOwner = processo.dados.value('@id', 'varchar(100)')
