@@ -2,7 +2,7 @@ USE Database_Name
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[bkp_full_step_01]') AND type in (N'P', N'PC'))
-   DROP PROCEDURE [dbo].[orion_bkp_full_step_01]
+   DROP PROCEDURE [dbo].[bkp_full_step_01]
 GO
 
 create procedure dbo.bkp_full_step_01 ( @backupdirectory nvarchar(200),@ONLY_DB VARCHAR(200) = null, @NOTIN_LIST VARCHAR(200) = null)
