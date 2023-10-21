@@ -134,7 +134,7 @@ IS NOT NULL THEN ',' ELSE
 + ')'
 + ISNULL ('
 INCLUDE (' + i.included_columns + ')', '') + '
-WITH (fillfactor = 90, data_compression = page, maxdop=8, online=on)
+WITH (fillfactor = 80, data_compression = page, maxdop=8, online=on)
 GO
 -- Percentual de melhoria estimado em: '+ CAST(s.avg_user_impact AS NVARCHAR) +'%' AS Command
 	FROM sys.dm_db_missing_index_details i
@@ -142,7 +142,8 @@ GO
 	INNER JOIN sys.dm_db_missing_index_groups g ON i.index_handle = g.index_handle
 	INNER JOIN sys.dm_db_missing_index_group_stats s ON s.group_handle = g.index_group_handle
 	WHERE i.database_id = 20
-	AND RIGHT(i.[statement], LEN(i.[statement]) - (LEN(m.[name]) + 3)) IN (
+	AND s.avg_user_impact > 75
+	AND RIGHT(i.[statement], LEN(i.[statement]) - (LEN(m.[name]) + 3)) NOT IN (
 '[dbo].[ADMINISTRADORAS_CARTAO_TARIFA]',
 '[dbo].[LCF_ATIVO_MOVIMENTO_PERIODO_IMPOSTO]',
 '[dbo].[PRODUTIV_OPERACOES]',
@@ -251,3 +252,7 @@ GO
 EXEC ('USE tempdb; IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID(''tempdb.dbo.fn_createindex_allcols'')) DROP FUNCTION dbo.fn_createindex_allcols')
 EXEC ('USE tempdb; IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID(''tempdb.dbo.fn_createindex_keycols'')) DROP FUNCTION dbo.fn_createindex_keycols')
 EXEC ('USE tempdb; IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID(''tempdb.dbo.fn_createindex_includecols'')) DROP FUNCTION dbo.fn_createindex_includecols')
+
+
+
+
