@@ -8,8 +8,8 @@ SELECT
     CAST(ROUND(((SUM(a.used_pages) * 8) / 1024.00), 2) AS NUMERIC(36, 2)) AS [used_mb],     
     CAST(ROUND(((SUM(a.total_pages) - SUM(a.used_pages)) * 8) / 1024.00, 2) AS NUMERIC(36, 2)) AS [unused_mb],
     dm.avg_fragmentation_in_percent AS [fragmentation],
-    'ALTER INDEX ['+ i.name +'] ON ['+ t.name +'] REORGANIZE)
-    GO' as Command
+    'ALTER INDEX ['+ i.name +'] ON ['+s.name+'].['+ t.name +'] REORGANIZE
+GO' as Command
 FROM    
     sys.tables t    
     JOIN sys.indexes i ON t.[object_id] = i.[object_id] 
