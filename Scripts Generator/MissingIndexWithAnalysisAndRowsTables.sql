@@ -120,9 +120,9 @@ SELECT DISTINCT
     tempdb.dbo.fn_createindex_keycols(i.index_handle),
     tempdb.dbo.fn_createindex_includecols(i.index_handle),
     '
-USE [S2]
+USE [Database_name]
 GO
-CREATE INDEX [OrionIx001]'
+CREATE INDEX [CNseg_001]'
 + ' ON ' + i.statement
 + ' (' + ISNULL(i.equality_columns,'')
 + CASE WHEN i.equality_columns IS NOT NULL AND i.inequality_columns IS NOT NULL THEN ',' ELSE '' END
