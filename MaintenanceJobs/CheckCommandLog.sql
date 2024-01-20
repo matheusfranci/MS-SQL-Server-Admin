@@ -24,6 +24,18 @@ FORMAT (EndTime, 'dd/MM/yyyy hh:mm:ss') AS Fim,
 datediff (minute, StartTime, EndTime) AS "Duração",
 ErrorNumber,
 ErrorMessage
-FROM ORION.dbo.CommandLog WHERE CommandType='DBCC_CHECKDB'
+FROM dbo.CommandLog WHERE CommandType='DBCC_CHECKDB'
 AND StartTime >= dateadd(day,datediff(day,1,GETDATE()),0)
 AND StartTime < dateadd(day,datediff(day,0,GETDATE()),0)
+
+-- CHECK DBCC CHECK progress
+SELECT 
+    session_id AS [Session ID], 
+    command AS [Command], 
+    start_time AS [Start Time], 
+    percent_complete AS [Percent Complete]
+FROM 
+    sys.dm_exec_requests 
+WHERE 
+    command LIKE 'DBCC%'
+
