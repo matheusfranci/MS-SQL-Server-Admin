@@ -22,6 +22,8 @@ command AS Comando,
 FORMAT (StartTime, 'dd/MM/yyyy hh:mm:ss') AS Inicio,
 FORMAT (EndTime, 'dd/MM/yyyy hh:mm:ss') AS Fim,
 datediff (minute, StartTime, EndTime) AS "Duração",
+        FORMAT (CONVERT(datetime, '19000101', 120) + 
+            DATEADD(minute, datediff(minute, StartTime, EndTime), 0), 'HH:mm') AS "Duração Total (HH:mm)",
 ErrorNumber,
 ErrorMessage
 FROM dbo.CommandLog WHERE CommandType='DBCC_CHECKDB'
