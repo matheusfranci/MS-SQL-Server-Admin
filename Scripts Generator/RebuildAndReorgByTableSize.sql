@@ -9,7 +9,7 @@ SELECT
     CAST(ROUND(((SUM(a.total_pages) - SUM(a.used_pages)) * 8) / 1024.00, 2) AS NUMERIC(36, 2)) AS [unused_mb],
    ROUND(avg_fragmentation_in_percent, 2)AS [fragmentation],
 	 script = case
-        when dm.avg_fragmentation_in_percent > 30 then 'ALTER INDEX ['+ i.name +'] ON ['+ s.name +'].['+ t.name +'] REBUILD;
+        when dm.avg_fragmentation_in_percent > 30 then 'ALTER INDEX ['+ i.name +'] ON ['+ s.name +'].['+ t.name +'] REBUILD
 		GO'
         when dm.avg_fragmentation_in_percent >= 5 and avg_fragmentation_in_percent <= 30 then 'ALTER INDEX ['+ i.name +'] ON ['+ s.name +'].['+ t.name +'] REORGANIZE
 		GO'
