@@ -1,4 +1,21 @@
+CREATE TABLE #IndexFrag (
+database VARCHAR(255),
+schema VARCHAR(255),
+table_name VARCHAR(255),
+index_name VARCHAR(255),
+type_desc VARCHAR(255),
+row_count VARCHAR(255),
+size_mb VARCHAR(255),
+used_mb VARCHAR(255),
+unused_mb VARCHAR(255),
+fragmentation VARCHAR(255),
+script VARCHAR(MAX));
+
+INSERT #IndexFrag
+EXEC sp_MSforeachdb '
+use [?]
 SELECT  
+	db_name() AS "database",
     s.[name] AS [schema],   
     t.[name] AS [table_name],   
     i.[name] AS [index_name],   
@@ -26,6 +43,7 @@ WHERE
     AND i.[object_id] > 255 
     AND i.name IS NOT NULL
 	AND dm.avg_fragmentation_in_percent > 5
+	AND DB_NAME() NOT IN ("master", "msdb", "model", "tempdb", "SIVVE_PRD")
 GROUP BY    
     t.[name],   
     s.[name],   
@@ -35,4 +53,3 @@ GROUP BY
     dm.avg_fragmentation_in_percent    
 ORDER BY    
     [size_mb] DESC;
-
