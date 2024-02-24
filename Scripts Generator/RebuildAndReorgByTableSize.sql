@@ -1,9 +1,9 @@
 CREATE TABLE #IndexFrag (
-database VARCHAR(255),
-schema VARCHAR(255),
+"database" VARCHAR(255),
+"schema" VARCHAR(255),
 table_name VARCHAR(255),
 index_name VARCHAR(255),
-type_desc VARCHAR(255),
+"type_desc" VARCHAR(255),
 row_count VARCHAR(255),
 size_mb VARCHAR(255),
 used_mb VARCHAR(255),
@@ -26,10 +26,10 @@ SELECT
     CAST(ROUND(((SUM(a.total_pages) - SUM(a.used_pages)) * 8) / 1024.00, 2) AS NUMERIC(36, 2)) AS [unused_mb],
    ROUND(avg_fragmentation_in_percent, 2)AS [fragmentation],
 	 script = case
-        when dm.avg_fragmentation_in_percent > 30 then 'ALTER INDEX ['+ i.name +'] ON ['+ s.name +'].['+ t.name +'] REBUILD
-		GO'
-        when dm.avg_fragmentation_in_percent >= 5 and avg_fragmentation_in_percent <= 30 then 'ALTER INDEX ['+ i.name +'] ON ['+ s.name +'].['+ t.name +'] REORGANIZE
-		GO'
+        when dm.avg_fragmentation_in_percent > 30 then "ALTER INDEX ["+ i.name +"] ON ["+ s.name +"].["+ t.name +"] REBUILD
+		GO"
+        when dm.avg_fragmentation_in_percent >= 5 and avg_fragmentation_in_percent <= 30 then "ALTER INDEX ["+ i.name +"] ON ["+ s.name +"].["+ t.name +"] REORGANIZE
+		GO"
     end
 FROM    
     sys.tables t    
@@ -43,7 +43,7 @@ WHERE
     AND i.[object_id] > 255 
     AND i.name IS NOT NULL
 	AND dm.avg_fragmentation_in_percent > 5
-	AND DB_NAME() NOT IN ("master", "msdb", "model", "tempdb", "SIVVE_PRD")
+	AND DB_NAME() NOT IN ("master", "msdb", "model", "tempdb")
 GROUP BY    
     t.[name],   
     s.[name],   
@@ -52,4 +52,4 @@ GROUP BY
     p.[rows],
     dm.avg_fragmentation_in_percent    
 ORDER BY    
-    [size_mb] DESC;
+    [size_mb] DESC;'
