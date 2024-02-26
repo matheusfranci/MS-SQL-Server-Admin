@@ -1,5 +1,6 @@
 
-SELECT 'USE [msdb];
+SELECT 'USE [msdb]
+GO
 EXEC msdb.dbo.sp_update_job @job_id = N''' + CONVERT(VARCHAR(36), j.job_id) + ''', @owner_login_name = N''marcos.vinicius''
 GO'
 FROM
