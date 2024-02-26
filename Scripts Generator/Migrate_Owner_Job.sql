@@ -1,6 +1,7 @@
 
 SELECT 'USE [msdb];
-EXEC msdb.dbo.sp_update_job @job_id = N''' + CONVERT(VARCHAR(36), j.job_id) + ''', @owner_login_name = N''marcos.vinicius'';'
+EXEC msdb.dbo.sp_update_job @job_id = N''' + CONVERT(VARCHAR(36), j.job_id) + ''', @owner_login_name = N''marcos.vinicius''
+GO'
 FROM
     msdb.dbo.sysjobs j
 INNER JOIN
