@@ -1,8 +1,25 @@
 -- Verificar todos os parâmetros do SQL SERVER
-EXEC sp_configure 'xp_cmdshell';
+SELECT 
+NAME AS "Parâmetro",
+Description AS "Descrição",
+CASE
+WHEN value_in_use = 1 THEN 'Habilitado'
+WHEN value_in_use = 0 THEN 'Desabilitado'
+ELSE NULL
+END AS 'Status'
+FROM sys.configurations
 
 -- Verificar parâmetros especifico, nesse caso o xp_cmdshell
-EXEC sp_configure 'xp_cmdshell';
+SELECT 
+NAME AS "Parâmetro",
+Description AS "Descrição",
+CASE
+WHEN value_in_use = 1 THEN 'Habilitado'
+WHEN value_in_use = 0 THEN 'Desabilitado'
+ELSE NULL
+END AS 'Status'
+FROM sys.configurations
+WHERE NAME = 'xp_cmdshell'
 
 -- Ativar o parâmetro
 EXEC sp_configure 'xp_cmdshell', 1;
@@ -11,6 +28,14 @@ RECONFIGURE;
 -- Desativar pois é um parâmetro relacionado a segurança
 EXEC sp_configure 'xp_cmdshell', 0;
 RECONFIGURE;
+
+-- Criando o ListFiles.ps1 no servidor
+param (
+    [string]$FolderPath
+)
+
+# Lista os arquivos na pasta
+Get-ChildItem $FolderPath | Select-Object Name
 
 -- Criando a procedure
 CREATE PROCEDURE dbo.ListFilesInFolder
