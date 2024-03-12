@@ -30,10 +30,10 @@ ROWTERMINATOR = "0x0A",
 --MAXERRORS = 1000,
 KEEPNULLS 
 )
-GO
 DECLARE @Dur INT = DATEDIFF(MINUTE, @StartTime, GETDATE());
 PRINT "Arquivo processado em" + CAST(@Dur AS VARCHAR) + " minutos";
 PRINT "---------------------------------------------------------"
+GO
 '
 FROM #TempResults
 WHERE OutputLine NOT IN ('NULL', 'Name', '---- ', 'OLD')
