@@ -59,18 +59,18 @@ FROM sys.sql_logins
 
 INSERT INTO #Senhas
 SELECT LOWER([name])
-FROM sys.sql_logins
+FROM sys.sql_logins WITH(NOLOCK)
 
 INSERT INTO #Senhas
 SELECT UPPER([name])
-FROM sys.sql_logins
+FROM sys.sql_logins WITH(NOLOCK)
 
 
 SELECT DISTINCT
     A.[name],
     B.Senha
 FROM 
-    sys.sql_logins			A
+    sys.sql_logins			A WITH(NOLOCK)
     CROSS APPLY #Senhas		B
 WHERE
 	PWDCOMPARE(B.Senha, A.password_hash) = 1
