@@ -1,6 +1,6 @@
 SELECT   d.name,
          d.recovery_model_desc,
-         MAX(b.backup_finish_date) AS backup_finish_date,
+         MAX(b.backup_finish_date) AS last_backup_finish_date,
 CASE 
 WHEN b.type = 'L'
 THEN 'Log Backup'
