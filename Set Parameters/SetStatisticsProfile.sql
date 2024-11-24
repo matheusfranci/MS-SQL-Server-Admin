@@ -1,1 +1,0 @@
-set statistics profile on
