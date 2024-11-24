@@ -1,1 +1,0 @@
-DBCC SQLPERF(logspace)
