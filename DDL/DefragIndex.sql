@@ -1,1 +1,0 @@
-alter index NOME_INDEX on NOME_TABELA  REBUILD
