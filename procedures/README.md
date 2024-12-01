@@ -34,3 +34,18 @@ Bem-vindo ao repositório **Procedures**! Este repositório contém scripts e pr
 | `stpLockMonitoringProcedure.md`             | Procedimento para monitoramento de bloqueios.                                                 |
 | `upload_file_to_server.md`                  | Script para upload de arquivos para um servidor.                                              |
 
+## Como Usar
+
+Para utilizar qualquer um dos scripts, basta copiá-lo para o seu ambiente de SQL Server e executá-lo no SQL Server Management Studio (SSMS) ou em outro cliente de SQL de sua preferência. Alguns scripts podem exigir permissões de administrador ou configuração específica, como o acesso ao registro do Windows ou serviços do SQL Server.
+
+## Contribuições
+
+Se você tiver sugestões de melhorias ou novos scripts, sinta-se à vontade para abrir uma issue ou enviar um pull request!
+
+## Observações
+
+Esses procedimentos foram realizados por minha pessoa ao longo de minha carreira, recentemente com a ajuda do ChatGPT eu adicionei breves descrições em cada procedimento afim de ajudar as pessoas, contudo homologue tudo e sempre consulte a documentação oficial do produto.
+
+## Licença
+
+Este repositório está sob a licença MIT. Sinta-se livre para usar, modificar e distribuir os scripts, conforme necessário.
