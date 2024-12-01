@@ -69,5 +69,5 @@ Esses scripts devem ser usados por administradores de banco de dados, profission
 Se você tiver sugestões de melhorias ou novos scripts que possam ser úteis para melhorar a segurança em SQL Server, fique à vontade para abrir um *pull request* ou abrir uma *issue*.
 
 ## Licença
-
+Este repositório é baseado nos curso de segurança para MS SQL Server da power tuning, esses labs foram realizados pelo MVP Dirceu Rezende e os arquivos foram remodelados e descritos com o auxilio de IA generativa.
 Este repositório é de código aberto e pode ser utilizado de acordo com a [Licença MIT](LICENSE).
