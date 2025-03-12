@@ -1,3 +1,8 @@
+# Script: Compressão de Índices Particionados
+
+Este script SQL realiza a compressão de dados em índices particionados, reconstruindo-os com compressão de página (`PAGE`) e um fator de preenchimento (`FILLFACTOR`) de 90. Ele também inclui um horário de corte para interromper o processo.
+
+```sql
 DECLARE   
     @comando          NVARCHAR(MAX),
 	@horario_de_corte VARCHAR(20)
