@@ -1,3 +1,6 @@
+Definição do procedimento armazenado `bkp_tlog_step_02` para realizar backups de log de transações.
+
+```sql
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[orion_bkp_tlog_step_02]') AND type in (N'P', N'PC'))
    DROP PROCEDURE [dbo].orion_bkp_tlog_step_02
 GO
