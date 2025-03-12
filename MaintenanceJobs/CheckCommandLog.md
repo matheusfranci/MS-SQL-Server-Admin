@@ -1,4 +1,14 @@
--- Check Index
+Markdown
+
+# Scripts de Monitoramento de SQL Server
+
+Este documento descreve três scripts SQL para monitorar diferentes aspectos de um servidor SQL Server.
+
+## 1. Verificação de Índices (Check Index)
+
+Este script consulta a tabela `CommandLog` para obter informações sobre operações de `ALTER_INDEX` executadas no dia anterior.
+
+```sql
 SELECT
 DATABASENAME,
 SCHEMANAME,
@@ -13,10 +23,13 @@ CommandLog
 WHERE CommandType = 'ALTER_INDEX'
 AND StartTime >= dateadd(day,datediff(day,1,GETDATE()),0)
 AND StartTime < dateadd(day,datediff(day,0,GETDATE()),0)
+```
 
-
-
--- Check checkdb job
+## 2. Verificação do Job DBCC CHECKDB (Check checkdb job)
+        
+Este script consulta a tabela CommandLog para obter informações sobre operações DBCC_CHECKDB executadas no dia anterior.
+        
+```sql
 SELECT databasename AS "Banco de dados",
 command AS Comando,
 FORMAT (StartTime, 'dd/MM/yyyy hh:mm:ss') AS Inicio,
@@ -29,8 +42,12 @@ ErrorMessage
 FROM dbo.CommandLog WHERE CommandType='DBCC_CHECKDB'
 AND StartTime >= dateadd(day,datediff(day,1,GETDATE()),0)
 AND StartTime < dateadd(day,datediff(day,0,GETDATE()),0)
-
--- CHECK DBCC CHECK progress
+```
+        
+## 3. Verificação do Progresso do DBCC CHECKDB (CHECK DBCC CHECK progress)
+        
+Este script consulta a DMV sys.dm_exec_requests para obter informações sobre o progresso atual das operações DBCC_CHECKDB em execução.
+```sql
 SELECT 
     session_id AS [Session ID], 
     command AS [Command], 
@@ -40,4 +57,4 @@ FROM
     sys.dm_exec_requests 
 WHERE 
     command LIKE 'DBCC%'
-
+```
