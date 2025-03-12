@@ -1,3 +1,32 @@
+# Geração Altamente Otimizada de Scripts de Criação de Índices Ausentes
+
+Este script SQL realiza uma análise ainda mais refinada de índices ausentes, gerando scripts `CREATE INDEX` personalizados com base em recomendações das DMVs do SQL Server. Ele inclui funções para manipular colunas de índice, um ranking baseado em impacto, otimizações na criação e manipulação da tabela temporária, e ajustes no tipo de dados para maior precisão.
+
+## Visão Geral do Script Atualizado
+
+O script executa as seguintes etapas:
+
+1.  **Criação de Funções de Manipulação de Colunas (tempdb):**
+    * `dbo.fn_createindex_allcols`: Retorna todas as colunas de um índice ausente como uma string separada por vírgulas.
+    * `dbo.fn_createindex_keycols`: Retorna as colunas de chave (igualdade e desigualdade) de um índice ausente como uma string separada por vírgulas.
+    * `dbo.fn_createindex_includecols`: Retorna as colunas incluídas de um índice ausente como uma string separada por vírgulas.
+2.  **Manipulação da Tabela Temporária `#IndexCreation`:**
+    * Verifica se a tabela temporária `#IndexCreation` existe e a remove se necessário.
+    * Cria a tabela temporária `#IndexCreation` com colunas relevantes para armazenar informações sobre índices ausentes, incluindo a alteração do tipo de dados `Estimated_Improvement_Percent` para `DECIMAL(5,2)`.
+3.  **Inserção de Dados na Tabela Temporária (com Melhorias):**
+    * Consulta as DMVs `sys.dm_db_missing_index_details`, `master.sys.databases`, `sys.dm_db_missing_index_groups` e `sys.dm_db_missing_index_group_stats` para obter informações sobre índices ausentes.
+    * Calcula um score baseado no impacto, custo e buscas do usuário.
+    * Utiliza as funções criadas para obter as colunas de chave e incluídas.
+    * Gera um nome de índice personalizado.
+    * Gera scripts `CREATE INDEX` com opções específicas (fillfactor = 90, compressão, MAXDOP, online).
+    * Gera o script `CREATE INDEX` diretamente, utilizando `OBJECT_NAME` para obter o nome da tabela.
+    * Filtra os resultados por um banco de dados específico (database_id = 20).
+4.  **Seleção e Exibição dos Dados:** Seleciona e exibe todos os dados da tabela temporária `#IndexCreation`.
+5.  **Limpeza:** Remove as funções criadas.
+
+## Detalhes do Script Atualizado
+
+```sql
 	EXEC ('USE tempdb; IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID(''tempdb.dbo.fn_createindex_allcols'')) DROP FUNCTION dbo.fn_createindex_allcols')
 	EXEC ('USE tempdb; EXEC(''
 CREATE FUNCTION dbo.fn_createindex_allcols (@ix_handle int)
