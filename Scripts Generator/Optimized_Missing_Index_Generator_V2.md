@@ -1,4 +1,33 @@
-	EXEC ('USE tempdb; IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID(''tempdb.dbo.fn_createindex_allcols'')) DROP FUNCTION dbo.fn_createindex_allcols')
+# Geração Refinada de Scripts de Criação de Índices Ausentes
+
+Este script SQL realiza uma análise aprimorada de índices ausentes, gerando scripts `CREATE INDEX` personalizados com base em recomendações das DMVs do SQL Server. Ele inclui funções para manipular colunas de índice, um ranking baseado em impacto, filtros para refinar as recomendações, e otimizações na criação e manipulação da tabela temporária.
+
+## Visão Geral do Script Atualizado
+
+O script executa as seguintes etapas:
+
+1.  **Criação de Funções de Manipulação de Colunas (tempdb):**
+    * `dbo.fn_createindex_allcols`: Retorna todas as colunas de um índice ausente como uma string separada por vírgulas.
+    * `dbo.fn_createindex_keycols`: Retorna as colunas de chave (igualdade e desigualdade) de um índice ausente como uma string separada por vírgulas.
+    * `dbo.fn_createindex_includecols`: Retorna as colunas incluídas de um índice ausente como uma string separada por vírgulas.
+2.  **Manipulação da Tabela Temporária `#IndexCreation`:**
+    * Verifica se a tabela temporária `#IndexCreation` existe e a remove se necessário.
+    * Cria a tabela temporária `#IndexCreation` com colunas relevantes para armazenar informações sobre índices ausentes.
+3.  **Inserção de Dados na Tabela Temporária (com Melhorias):**
+    * Consulta as DMVs `sys.dm_db_missing_index_details`, `master.sys.databases`, `sys.dm_db_missing_index_groups` e `sys.dm_db_missing_index_group_stats` para obter informações sobre índices ausentes.
+    * Calcula um score baseado no impacto, custo e buscas do usuário.
+    * Utiliza as funções criadas para obter as colunas de chave e incluídas.
+    * Gera um nome de índice personalizado.
+    * Gera scripts `CREATE INDEX` com opções específicas (fillfactor, compressão, MAXDOP, online).
+    * Adiciona comentários com informações sobre o impacto estimado.
+    * Filtra os resultados por um banco de dados específico (database_id = 20), impacto mínimo (avg_user_impact > 75) e exclui tabelas específicas.
+4.  **Seleção e Exibição dos Scripts:** Seleciona e exibe os scripts `CREATE INDEX` da tabela temporária.
+5.  **Limpeza:** Remove as funções criadas.
+
+## Detalhes do Script Atualizado
+
+```sql
+        EXEC ('USE tempdb; IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID(''tempdb.dbo.fn_createindex_allcols'')) DROP FUNCTION dbo.fn_createindex_allcols')
 	EXEC ('USE tempdb; EXEC(''
 CREATE FUNCTION dbo.fn_createindex_allcols (@ix_handle int)
 RETURNS NVARCHAR(max)
@@ -145,114 +174,10 @@ GO
 	AND s.avg_user_impact > 75
 	AND RIGHT(i.[statement], LEN(i.[statement]) - (LEN(m.[name]) + 3)) NOT IN (
 '[dbo].[ADMINISTRADORAS_CARTAO_TARIFA]',
-'[dbo].[LCF_ATIVO_MOVIMENTO_PERIODO_IMPOSTO]',
-'[dbo].[PRODUTIV_OPERACOES]',
-'[dbo].[LF_DADOS_ARRECADACAO]',
-'[dbo].[CTB_CENTRO_CUSTO]',
-'[dbo].[FATURAMENTO_OCORRENCIAS]',
-'[dbo].[CTB_CHEQUE_CARTAO]',
-'[dbo].[LOG_OMS_HISTORICO_CONSULTA]',
-'[dbo].[LF_LX_NATUREZA_JURIDICA]',
-'[dbo].[LF_LX_NATUREZA_RENDIMENTO]',
-'[dbo].[PRODUTOS_LINHA_NEGOCIO]',
-'[dbo].[LF_LX_NATUREZA_RENDIMENTO_IMPOSTO]',
-'[dbo].[CTB_CONTA_PLANO]',
-'[dbo].[PRODUTOS_GRUPO]',
-'[dbo].[LCF_APURACAO_ITEM]',
-'[dbo].[LCF_REDUCAO_CUPOM]',
-'[dbo].[LOJA_PEDIDO_VENDA]',
-'[dbo].[CTB_HIST_PADRAO]',
-'[dbo].[CTE_XML]',
-'[dbo].[CTE_XML_ITEM]',
-'[dbo].[PRODUTOS_CATEGORIA]',
-'[dbo].[CATALOGSCHEMASP]',
-'[dbo].[PRODUTOS_GRIFFE_GRUPO]',
-'[dbo].[CTE_XML_LOG]',
-'[dbo].[CTB_MOVIMENTO_B2C]',
-'[dbo].[CATALOGTABLESP]',
-'[dbo].[CTB_LANC_PADRAO_ITEM]',
-'[dbo].[PRODUTOS_SUBCATEGORIA]',
-'[dbo].[LCF_CFE_REFERENCIA]',
-'[dbo].[CATALOGCOLSSP]',
-'[dbo].[PRODUTOS_SUBGRUPO]',
-'[dbo].[CATALOGDEFAULTSP]',
-'[dbo].[PRODUTOS_TAB_MEDIDAS]',
-'[dbo].[PRODUTOS_TAB_OPERACOES]',
-'[dbo].[ADV_PRODUTOS_TIPOS]',
-'[dbo].[CatalogIndexSP]',
-'[dbo].[PRODUTOS_TIPOS]',
-'[dbo].[LOJA_PEDIDO_PGTO]',
-'[dbo].[CATALOGFOREIGNKEYSP]',
-'[dbo].[ADV_PRODUTOS_MODELAGEM]',
-'[dbo].[JOBS]',
-'[dbo].[MEDIDAS]',
-'[dbo].[CTB_LX_LANCAMENTO_TIPO]',
-'[dbo].[LOJA_VENDA]',
-'[dbo].[CONFIG_TRIBUTARIA]',
-'[dbo].[ADV_PRODUTOS_FIT]',
-'[dbo].[CONFIG_TRIBUTARIA_EXCECAO]',
-'[dbo].[ADV_PRODUTOS_CINTURA]',
-'[dbo].[TABELA_CODIGO_AJUSTE_SPED]',
-'[dbo].[CONFIG_TRIBUTARIA_FILIAL]',
-'[dbo].[ADV_PRODUTOS_MANGA]',
-'[dbo].[CONFIG_TRIBUTARIA_DETALHAMENTO]',
-'[dbo].[ADV_PRODUTOS_DECOTE]',
-'[dbo].[TELAS_CUSTOMIZADAS]',
-'[dbo].[ADV_PRODUTOS_COMPRIMENTO]',
-'[dbo].[ADQUIRENTES_EQUALS]',
-'[dbo].[BANDEIRAS_EQUALS]',
-'[dbo].[LOJA_VENDA_PARCELAS]',
-'[dbo].[LCF_CFE_PGTO]',
-'[dbo].[LF_REGISTRO_SAIDA_ITEM]',
-'[dbo].[ADMINISTRADORAS_DEPARA_EQUALS]',
-'[dbo].[CTB_CONF_BAIXA_EQUALS]',
-'[dbo].[LF_INTEGRACAO_GOVERNO_ARQUIVO]',
-'[dbo].[ORCAMENTOS]',
-'[dbo].[LF_SUB_ITEM_APURACAO]',
-'[dbo].[CTB_CONF_BAIXA_EQUALS_CC]',
-'[dbo].[PRODUTOS_MODELO]',
-'[dbo].[ESTOQUE_RET1_MAT]',
-'[dbo].[FATURAMENTO]',
-'[dbo].[CTB_CONTROLE_RELATORIO_EQUALS_DOWNLOAD]',
-'[dbo].[LCF_INF_CONTRIBUINTE_REINF]',
-'[dbo].[CTB_CONTROLE_RELATORIO_EQUALS]',
-'[dbo].[LCF_LANCAMENTO]',
-'[dbo].[LCF_INF_CONTRIBUINTE_REINF_ALTERACAO]',
-'[dbo].[LCF_TERCEIRO]',
-'[dbo].[ESTOQUE_MAT_CTG_ITENS]',
-'[dbo].[VENDAS_COTAS_TIPO_ITENS]',
-'[dbo].[CTB_CONTROLE_RELATORIO_EQUALS_LOG]',
-'[dbo].[PRODUTOS_LOG]',
-'[dbo].[EQUALS_LOG_CTB_CHEQUE_CARTAO]',
-'[dbo].[LCF_REDUCAO_CUPOM_PGTO]',
-'[dbo].[EQUALS_LOG_CTB_LANCAMENTO_ITEM]',
-'[dbo].[EQUALS_LOJA_VENDA_PARCELAS]',
-'[dbo].[TIPO_MOVIMENTO_EQUALS]',
-'[dbo].[FATURAMENTO_PGTO]',
-'[dbo].[CTB_CHEQUE_CARTAO_ENVIADO]',
-'[dbo].[FORMA_PGTO]',
-'[dbo].[ESTOQUE_PROD_ENT]',
-'[dbo].[FORMA_PGTO_PARCELA]',
-'[dbo].[LF_LX_MDM]',
-'[dbo].[LF_REGISTRO_SAIDA]',
-'[dbo].[LCF_CFE]',
-'[dbo].[PRODUTOS_GRIFFE_CATEGORIA]',
-'[dbo].[LCF_CFE_IMPOSTO]',
-'[dbo].[MODIFICACAO_FICHA_TECNICA]',
-'[dbo].[LCF_CFE_ITEM]',
-'[dbo].[DADOS_CADASTRO_XML_NFE]',
-'[dbo].[CTB_A_RECEBER_FATURA]',
-'[dbo].[B2C_PRODUTOS]',
-'[dbo].[DOCA_GRUPO_PRODUTO]',
-'[dbo].[PACOTE_MATERIAIS_ITEM]',
-'[dbo].[DOCA_SUBGRUPO_PRODUTO]')
+'[dbo].[LCF_ATIVO_MOVIMENTO_PERIODO_IMPOSTO]')
 
 	SELECT Command FROM #IndexCreation
 	
 EXEC ('USE tempdb; IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID(''tempdb.dbo.fn_createindex_allcols'')) DROP FUNCTION dbo.fn_createindex_allcols')
 EXEC ('USE tempdb; IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID(''tempdb.dbo.fn_createindex_keycols'')) DROP FUNCTION dbo.fn_createindex_keycols')
 EXEC ('USE tempdb; IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID(''tempdb.dbo.fn_createindex_includecols'')) DROP FUNCTION dbo.fn_createindex_includecols')
-
-
-
-
