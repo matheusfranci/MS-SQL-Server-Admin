@@ -1,3 +1,8 @@
+# DDL: Procedimento Armazenado CommandExecute
+
+Este script SQL cria ou altera o procedimento armazenado `CommandExecute` no esquema `dbo`.
+
+```sql
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -290,4 +295,4 @@ BEGIN
 
 END
 GO
-
+```
