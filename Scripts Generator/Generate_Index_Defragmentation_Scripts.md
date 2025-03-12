@@ -1,3 +1,21 @@
+# Análise de Fragmentação de Índices e Geração de Scripts de Desfragmentação
+
+Este script SQL analisa a fragmentação de índices em todos os bancos de dados do servidor SQL Server e gera scripts `ALTER INDEX` para reconstruir ou reorganizar índices com base no nível de fragmentação.
+
+## Visão Geral do Script
+
+O script executa as seguintes etapas:
+
+1.  **Criação da Tabela Temporária `#IndexFrag`:** Cria uma tabela temporária para armazenar informações sobre a fragmentação de índices.
+2.  **Execução de `sp_MSforeachdb`:** Utiliza o procedimento armazenado `sp_MSforeachdb` para executar uma consulta em todos os bancos de dados do servidor.
+3.  **Coleta de Informações de Fragmentação:** Coleta informações sobre índices, incluindo nome do banco de dados, esquema, tabela, índice, tipo, contagem de linhas, tamanho, uso, fragmentação e gera scripts `ALTER INDEX`.
+4.  **Geração de Scripts `ALTER INDEX`:** Gera scripts `ALTER INDEX REBUILD` para índices com fragmentação acima de 30% e scripts `ALTER INDEX REORGANIZE` para índices com fragmentação entre 5% e 30%.
+5.  **Inserção de Dados na Tabela Temporária:** Insere os resultados da consulta na tabela temporária `#IndexFrag`.
+6.  **Exibição dos Resultados:** Exibe os dados da tabela temporária `#IndexFrag`.
+
+## Detalhes do Script
+
+```sql
 CREATE TABLE #IndexFrag (
 "database" VARCHAR(255),
 "schema" VARCHAR(255),
