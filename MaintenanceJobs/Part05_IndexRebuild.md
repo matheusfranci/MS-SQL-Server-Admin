@@ -1,3 +1,8 @@
+# DDL: Procedimento Armazenado IndexOptimize
+
+Este script SQL cria ou altera o procedimento armazenado `IndexOptimize` no esquema `dbo`.
+
+```sql
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2431,6 +2436,6 @@ BEGIN
   ----------------------------------------------------------------------------------------------------
 
 END
-
+```
 GO
 
