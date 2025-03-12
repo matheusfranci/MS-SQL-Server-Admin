@@ -1,6 +1,6 @@
 # Análise de Desempenho SQL Server - Procedures sp_Blitz
 
-## 2. sp_Blitz
+## 2. sp_BlitzCache
 ```sql
 SET ANSI_NULLS ON;
 SET ANSI_PADDING ON;
