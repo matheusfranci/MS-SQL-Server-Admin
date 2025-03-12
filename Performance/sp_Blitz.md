@@ -1,3 +1,8 @@
+# Análise de Desempenho SQL Server - Procedures sp_Blitz
+
+## 1. sp_Blitz
+
+```sql
 IF OBJECT_ID('dbo.sp_Blitz') IS NULL
   EXEC ('CREATE PROCEDURE dbo.sp_Blitz AS RETURN 0;');
 GO
@@ -9869,8 +9874,9 @@ IF @ProductVersionMajor >= 10 AND  NOT EXISTS ( SELECT  1
 
     SET NOCOUNT OFF;
 GO
+```
 
-/*
+```sql
 --Sample execution call with the most common parameters:
 EXEC [dbo].[sp_Blitz] 
     @CheckUserDatabaseObjects = 1 ,
@@ -9879,4 +9885,4 @@ EXEC [dbo].[sp_Blitz]
     @OutputProcedureCache = 0 ,
     @CheckProcedureCacheFilter = NULL,
     @CheckServerInfo = 1
-*/
+```
