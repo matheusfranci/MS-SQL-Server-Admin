@@ -1,3 +1,7 @@
+# Análise de Desempenho SQL Server - Procedures sp_Blitz
+
+## 4. sp_BlitzIndex
+```sql
 SET ANSI_NULLS ON;
 SET ANSI_PADDING ON;
 SET ANSI_WARNINGS ON;
@@ -6196,3 +6200,4 @@ BEGIN CATCH
         RETURN;
     END CATCH;
 GO
+```
