@@ -1,3 +1,7 @@
+# Análise de Desempenho SQL Server - Procedures sp_Blitz
+
+## 3. sp_BlitzFirst
+```sql
 IF OBJECT_ID('dbo.sp_BlitzFirst') IS NULL
   EXEC ('CREATE PROCEDURE dbo.sp_BlitzFirst AS RETURN 0;');
 GO
@@ -4937,16 +4941,18 @@ END; /* ELSE IF @OutputType = 'SCHEMA' */
 
 SET NOCOUNT OFF;
 GO
+```
 
-
-
-/* How to run it:
+```sql
+-- How to run it:
 EXEC dbo.sp_BlitzFirst
-
-With extra diagnostic info:
+```
+```sql
+-- With extra diagnostic info:
 EXEC dbo.sp_BlitzFirst @ExpertMode = 1;
-
-Saving output to tables:
+```
+```sql
+-- Saving output to tables:
 EXEC sp_BlitzFirst
   @OutputDatabaseName = 'DBAtools'
 , @OutputSchemaName = 'dbo'
@@ -4957,4 +4963,4 @@ EXEC sp_BlitzFirst
 , @OutputTableNameBlitzCache = 'BlitzCache'
 , @OutputTableNameBlitzWho = 'BlitzWho'
 , @OutputType = 'none'
-*/
+```
