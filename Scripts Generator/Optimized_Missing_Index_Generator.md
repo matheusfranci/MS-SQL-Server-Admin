@@ -1,4 +1,32 @@
-	EXEC ('USE tempdb; IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID(''tempdb.dbo.fn_createindex_allcols'')) DROP FUNCTION dbo.fn_createindex_allcols')
+# Geração Otimizada de Scripts de Criação de Índices Ausentes
+
+Este script SQL realiza uma análise aprofundada de índices ausentes, gerando scripts `CREATE INDEX` personalizados com base em recomendações das DMVs do SQL Server. Ele inclui funções para manipular colunas de índice, um ranking baseado em impacto, filtros para refinar as recomendações, e agora, inclui informações sobre o número de registros na tabela.
+
+## Visão Geral do Script Atualizado
+
+O script executa as seguintes etapas:
+
+1.  **Criação de Funções de Manipulação de Colunas (tempdb):**
+    * `dbo.fn_createindex_allcols`: Retorna todas as colunas de um índice ausente como uma string separada por vírgulas.
+    * `dbo.fn_createindex_keycols`: Retorna as colunas de chave (igualdade e desigualdade) de um índice ausente como uma string separada por vírgulas.
+    * `dbo.fn_createindex_includecols`: Retorna as colunas incluídas de um índice ausente como uma string separada por vírgulas.
+2.  **Criação da Tabela Temporária `#IndexCreation`:** Cria uma tabela temporária para armazenar informações sobre índices ausentes.
+3.  **Inserção de Dados na Tabela Temporária (com DISTINCT e Row Count):**
+    * Consulta as DMVs `sys.dm_db_missing_index_details`, `master.sys.databases`, `sys.dm_db_missing_index_groups`, `sys.dm_db_missing_index_group_stats` e `sys.dm_db_partition_stats` para obter informações sobre índices ausentes e o número de registros nas tabelas.
+    * Utiliza `DISTINCT` para garantir que apenas recomendações únicas sejam consideradas.
+    * Calcula um score baseado no impacto, custo e buscas do usuário.
+    * Utiliza as funções criadas para obter as colunas de chave e incluídas.
+    * Gera um nome de índice personalizado.
+    * Gera scripts `CREATE INDEX` com opções específicas (fillfactor, compressão, MAXDOP, online).
+    * Adiciona comentários com informações sobre o impacto estimado, o número de índices na tabela e o número de registros na tabela.
+    * Filtra os resultados por um banco de dados específico (database_id = 20), impacto mínimo (avg_user_impact > 75).
+4.  **Seleção e Exibição dos Scripts:** Seleciona e exibe os scripts `CREATE INDEX` da tabela temporária.
+5.  **Limpeza:** Remove a tabela temporária e as funções criadas.
+
+## Detalhes do Script Atualizado
+
+```sql
+        EXEC ('USE tempdb; IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID(''tempdb.dbo.fn_createindex_allcols'')) DROP FUNCTION dbo.fn_createindex_allcols')
 	EXEC ('USE tempdb; EXEC(''
 CREATE FUNCTION dbo.fn_createindex_allcols (@ix_handle int)
 RETURNS NVARCHAR(max)
