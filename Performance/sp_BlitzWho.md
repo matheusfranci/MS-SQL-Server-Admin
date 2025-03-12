@@ -1,3 +1,7 @@
+# Análise de Desempenho SQL Server - Procedures sp_Blitz
+
+## 5. sp_BlitzWho
+```sql
 IF OBJECT_ID('dbo.sp_BlitzWho') IS NULL
 	EXEC ('CREATE PROCEDURE dbo.sp_BlitzWho AS RETURN 0;')
 GO
@@ -1386,3 +1390,4 @@ EXEC sp_executesql @StringToExecute,
 
 END
 GO 
+```
